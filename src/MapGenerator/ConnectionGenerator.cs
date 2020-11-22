@@ -10,17 +10,25 @@ namespace ConnectionBuilder
             IEnumerable<MapNodeInColumn> fromNodes,
             IEnumerable<MapNodeInColumn> toNodes)
         {
-            var combinations = GenerateAllCombinations(fromNodes, toNodes);
+            var allCombinations = GenerateAllCombinations(fromNodes, toNodes);
+#if !FAKE_IT
+            return new[] { allCombinations };
+#else 
+            var validCombinations = allCombinations
+                .Aggregate(
+                    new[] { Enumerable.Empty<Connection>() },
+                    (accumulator, sequence) =>
+                        fromNodes.SelectMany(f =>
+                            toNodes.Select(t => f.MakeConnection(t)));
 
-            var result = new List<IEnumerable<Connection>>();
-            result.Add(combinations);
-            return result;
+            return validCombinations;
+#endif
         }
 
         public static IEnumerable<Connection> GenerateAllCombinations(
             IEnumerable<MapNodeInColumn> fromNodes,
             IEnumerable<MapNodeInColumn> toNodes)
             => fromNodes.SelectMany(f =>
-                    toNodes.Select(t => f.MakeConnection(t)));
+               toNodes.Select(t => f.MakeConnection(t)));
     }
 }
