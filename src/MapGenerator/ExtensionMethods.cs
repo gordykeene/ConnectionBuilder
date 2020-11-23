@@ -32,6 +32,6 @@ namespace ConnectionBuilder
                     .Select(c => $"  {c}"));
 
         public static ConnectionSet ToConnectionSet(this IEnumerable<Connection> set)
-            => new ConnectionSet { Collection = set };
+            => new ConnectionSet { Connections = set };
     }
 }

@@ -11,23 +11,20 @@ namespace ConnectionBuilder
             IEnumerable<MapNodeInColumn> toNodes)
         {
             var allCombinations = GenerateAllConnections(fromNodes, toNodes);
-            
             var result = Permutations(allCombinations)
                 .Distinct()
-                .ToList();
+                .Where(c => IsValidConnectionSet(c, fromNodes, toNodes));
             
             // TODO: Add filter above here
 
             return result;
         }
 
-        // private static ConnectionSet GenerateAllConnections(
         private static ConnectionSet GenerateAllConnections(
             IEnumerable<MapNodeInColumn> fromNodes,
             IEnumerable<MapNodeInColumn> toNodes)
             => fromNodes.SelectMany(f =>
                toNodes.Select(t => f.MakeConnection(t))).ToConnectionSet();
-
 
         private static IEnumerable<ConnectionSet> Permutations(
             ConnectionSet connections)
@@ -54,6 +51,40 @@ namespace ConnectionBuilder
             var count = connectionsArray.Count();
             for (var i = 0; i < count; ++i)
                 if (i != skipIndex) yield return connectionsArray[i];
+        }
+
+        private static bool IsValidConnectionSet(
+            ConnectionSet connections,
+            IEnumerable<MapNodeInColumn> fromNodes,
+            IEnumerable<MapNodeInColumn> toNodes)
+        {
+            // All "from" nodes must have a connection
+            foreach (var n in fromNodes)
+            {
+                bool found() {
+                    foreach (var c in connections) 
+                        if (n.Y == c.From.Y) return true;
+                    return false;
+                };
+                if (!found()) return false;
+            }
+
+            // Add "to" nodes must have a connection
+            foreach (var n in toNodes)
+            {
+                bool found()
+                {
+                    foreach (var c in connections) 
+                        if (n.Y == c.To.Y) return true;
+                    return false;
+                };
+                if (!found()) return false;
+            }
+
+            // Connections must not cross
+
+
+            return true;
         }
     }
 }

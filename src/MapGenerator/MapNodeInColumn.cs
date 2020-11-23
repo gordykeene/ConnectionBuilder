@@ -59,19 +59,19 @@ namespace ConnectionBuilder
 
     public class ConnectionSet : IEnumerable<Connection>, IEquatable<ConnectionSet>, IEqualityComparer<ConnectionSet>
     {
-        public IEnumerable<Connection> Collection;
+        public IEnumerable<Connection> Connections;
 
         public IEnumerator<Connection> GetEnumerator()
-            => Collection.GetEnumerator();
+            => Connections.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
         public bool Equals(ConnectionSet other)
-            => Collection
+            => Connections
                 .OrderBy(c => c.From.Y)
                 .ThenBy(c => c.To.Y)
-                .SequenceEqual(other.Collection
+                .SequenceEqual(other.Connections
                     .OrderBy(c => c.From.Y)
                     .ThenBy(c => c.To.Y));
         public override bool Equals(object obj)
@@ -80,7 +80,7 @@ namespace ConnectionBuilder
         public override int GetHashCode()
         {
             HashCode hash = new HashCode();
-            foreach (var item in Collection) hash.Add(item);
+            foreach (var item in Connections) hash.Add(item);
             return hash.ToHashCode();
         }
         public static bool operator ==(ConnectionSet left, ConnectionSet right)
