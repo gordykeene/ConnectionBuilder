@@ -14,9 +14,6 @@ namespace ConnectionBuilder
             var result = Permutations(allCombinations)
                 .Distinct()
                 .Where(c => IsValidConnectionSet(c, fromNodes, toNodes));
-            
-            // TODO: Add filter above here
-
             return result;
         }
 
@@ -36,7 +33,6 @@ namespace ConnectionBuilder
                 for (var skipIndex = 0; skipIndex < count; ++skipIndex)
                 {
                     var perm = Permutation(connections, skipIndex);
-                    // yield return perm;
                     var perms = Permutations(perm.ToConnectionSet()).Distinct();
                     foreach (var p in perms) yield return p;
                 }
@@ -82,8 +78,17 @@ namespace ConnectionBuilder
             }
 
             // Connections must not cross
+            foreach (var c0 in connections)
+                foreach (var c1 in connections)
+                    if (c0 != c1)
+                    {
+                        if (c0.From.Y < c1.From.Y
+                            && c0.To.Y > c1.To.Y) return false;
+                        if (c0.From.Y > c1.From.Y
+                            && c0.To.Y < c1.To.Y) return false;
+                    }
 
-
+            // Winner winner chicken dinner
             return true;
         }
     }

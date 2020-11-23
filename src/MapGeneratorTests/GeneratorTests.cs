@@ -31,7 +31,7 @@ namespace ConnectionBuilderTests
 
         [Theory]
         [MemberData(nameof(Data))]
-        public void ValidateTestCase(
+        public void ValidateTestCases(
             int testCase,
             MapNodeInColumn[] fromNodes,
             MapNodeInColumn[] toNodes,
@@ -39,13 +39,7 @@ namespace ConnectionBuilderTests
         {
             var solutions = new ConnectionGenerator()
                 .GeneratePossibilities(fromNodes, toNodes);
-#if USE
             solutions.ToFormattedString().ShouldBe(expected.ToFormattedString());
-#else
-            var s = solutions.ToFormattedString();
-            var e = expected.ToFormattedString();
-            s.ShouldBe(e);
-#endif
         }
 
         public static IEnumerable<object[]> Data()
@@ -58,7 +52,7 @@ namespace ConnectionBuilderTests
                 .Range(0, 5)
                 .Select(n => n.MakeNode())
                 .ToArray();
-#if USE
+
             yield return new object[] {
                 1001,
                 new[] { f[0] },
@@ -93,7 +87,7 @@ namespace ConnectionBuilderTests
                     },
                 }
             };
-#endif
+
             yield return new object[] {
                 1004,
                 new[] { f[0], f[1] },
