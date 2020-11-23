@@ -10,25 +10,50 @@ namespace ConnectionBuilder
             IEnumerable<MapNodeInColumn> fromNodes,
             IEnumerable<MapNodeInColumn> toNodes)
         {
-            var allCombinations = GenerateAllCombinations(fromNodes, toNodes);
-#if !FAKE_IT
-            return new[] { allCombinations };
-#else 
-            var validCombinations = allCombinations
-                .Aggregate(
-                    new[] { Enumerable.Empty<Connection>() },
-                    (accumulator, sequence) =>
-                        fromNodes.SelectMany(f =>
-                            toNodes.Select(t => f.MakeConnection(t)));
+            var allCombinations = GenerateAllConnections(fromNodes, toNodes);
+            
+            var result = Permutations(allCombinations)
+                .Distinct()
+                .ToList();
+            
+            // TODO: Add filter above here
 
-            return validCombinations;
-#endif
+            return result;
         }
 
-        public static IEnumerable<Connection> GenerateAllCombinations(
+        // private static ConnectionSet GenerateAllConnections(
+        private static ConnectionSet GenerateAllConnections(
             IEnumerable<MapNodeInColumn> fromNodes,
             IEnumerable<MapNodeInColumn> toNodes)
             => fromNodes.SelectMany(f =>
-               toNodes.Select(t => f.MakeConnection(t)));
+               toNodes.Select(t => f.MakeConnection(t))).ToConnectionSet();
+
+
+        private static IEnumerable<ConnectionSet> Permutations(
+            ConnectionSet connections)
+        {
+            var count = connections.Count();
+            if (count > 0)
+            {
+                yield return connections;
+                for (var skipIndex = 0; skipIndex < count; ++skipIndex)
+                {
+                    var perm = Permutation(connections, skipIndex);
+                    // yield return perm;
+                    var perms = Permutations(perm.ToConnectionSet()).Distinct();
+                    foreach (var p in perms) yield return p;
+                }
+            }
+        }
+
+        private static IEnumerable<Connection> Permutation(
+            ConnectionSet connections,
+            int skipIndex)
+        {
+            var connectionsArray = connections.ToArray();
+            var count = connectionsArray.Count();
+            for (var i = 0; i < count; ++i)
+                if (i != skipIndex) yield return connectionsArray[i];
+        }
     }
 }

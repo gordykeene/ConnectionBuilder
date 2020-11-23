@@ -29,6 +29,9 @@ namespace ConnectionBuilder
                 + string.Join("\n", connectionSet
                     .OrderBy(c => c.From.Y)
                     .ThenBy(c => c.To.Y)
-                    .Select(c => $"  {c.From.Y} ==> {c.To.Y}"));
+                    .Select(c => $"  {c}"));
+
+        public static ConnectionSet ToConnectionSet(this IEnumerable<Connection> set)
+            => new ConnectionSet { Collection = set };
     }
 }

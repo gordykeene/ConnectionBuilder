@@ -58,7 +58,7 @@ namespace ConnectionBuilderTests
                 .Range(0, 5)
                 .Select(n => n.MakeNode())
                 .ToArray();
-#if !USE
+#if USE
             yield return new object[] {
                 1001,
                 new[] { f[0] },
