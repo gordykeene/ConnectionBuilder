@@ -13,7 +13,7 @@ namespace ConnectionBuilderTests
 
         public static MapNodeInColumn MakeNode(this int value)
             => new MapNodeInColumn {
-                NodeId = _nodeId++,
+                NodeId = _nodeId++.ToString(),
                 Y = value
             };
 

@@ -8,7 +8,7 @@ namespace ConnectionBuilder
 {
     public class MapNodeInColumn : IEquatable<MapNodeInColumn>, IEqualityComparer<MapNodeInColumn>
     {
-        public int NodeId;
+        public string NodeId;
         public int Y;
 
         public bool Equals(MapNodeInColumn other)
@@ -28,6 +28,9 @@ namespace ConnectionBuilder
             => left.Equals(right);
         public int GetHashCode([DisallowNull] MapNodeInColumn obj)
             => obj.GetHashCode();
+
+        public override string ToString()
+            => $"id{NodeId},Y:{Y}";
     }
 
     public class Connection : IEquatable<Connection>, IEqualityComparer<Connection>
@@ -54,7 +57,7 @@ namespace ConnectionBuilder
             => obj.GetHashCode();
 
         public override string ToString()
-            => $"{From.Y} ==> {To.Y}";
+            => $"{From} ==> {To}";
     }
 
     public class ConnectionSet : IEnumerable<Connection>, IEquatable<ConnectionSet>, IEqualityComparer<ConnectionSet>

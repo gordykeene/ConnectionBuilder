@@ -9,13 +9,9 @@ namespace ConnectionBuilder
         public IEnumerable<IEnumerable<Connection>> GeneratePossibilities(
             IEnumerable<MapNodeInColumn> fromNodes,
             IEnumerable<MapNodeInColumn> toNodes)
-        {
-            var allCombinations = GenerateAllConnections(fromNodes, toNodes);
-            var result = Permutations(allCombinations)
+            => GenerateAllPermutations(GenerateAllConnections(fromNodes, toNodes))
                 .Distinct()
                 .Where(c => IsValidConnectionSet(c, fromNodes, toNodes));
-            return result;
-        }
 
         private static ConnectionSet GenerateAllConnections(
             IEnumerable<MapNodeInColumn> fromNodes,
@@ -23,7 +19,7 @@ namespace ConnectionBuilder
             => fromNodes.SelectMany(f =>
                toNodes.Select(t => f.MakeConnection(t))).ToConnectionSet();
 
-        private static IEnumerable<ConnectionSet> Permutations(
+        private static IEnumerable<ConnectionSet> GenerateAllPermutations(
             ConnectionSet connections)
         {
             var count = connections.Count();
@@ -33,7 +29,7 @@ namespace ConnectionBuilder
                 for (var skipIndex = 0; skipIndex < count; ++skipIndex)
                 {
                     var perm = Permutation(connections, skipIndex);
-                    var perms = Permutations(perm.ToConnectionSet()).Distinct();
+                    var perms = GenerateAllPermutations(perm.ToConnectionSet()).Distinct();
                     foreach (var p in perms) yield return p;
                 }
             }

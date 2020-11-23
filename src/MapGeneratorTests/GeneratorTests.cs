@@ -1,7 +1,6 @@
 #pragma warning disable xUnit1026
 using ConnectionBuilder;
 using Shouldly;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -53,6 +52,7 @@ namespace ConnectionBuilderTests
                 .Select(n => n.MakeNode())
                 .ToArray();
 
+            // 1FromAnd1To_OnePossibility
             yield return new object[] {
                 1001,
                 new[] { f[0] },
@@ -64,6 +64,7 @@ namespace ConnectionBuilderTests
                 }
             };
 
+            // 2FromAnd1To_OnePossibility()
             yield return new object[] {
                 1002,
                 new[] { f[0], f[1] },
@@ -88,6 +89,7 @@ namespace ConnectionBuilderTests
                 }
             };
 
+            // 2FromAnd2ToPerfectlyLinedUp_ThreePossibilities()
             yield return new object[] {
                 1004,
                 new[] { f[0], f[1] },
@@ -109,6 +111,26 @@ namespace ConnectionBuilderTests
                     },
                 }
             };
+
+            //// 2FromAnd2ToDiamondShape_TwoPossibilities
+            //yield return new object[] {
+            //    1004,
+            //    new[] { f[1], f[3] },
+            //    new[] { t[2], f[4] },
+            //    new List<IEnumerable<Connection>> {
+            //        new List<Connection> {
+            //            f[1].MakeConnection(t[3]),
+            //            f[2].MakeConnection(t[4]),
+            //        },
+            //        new List<Connection> {
+            //            f[1].MakeConnection(t[3]),
+            //            f[2].MakeConnection(t[4]),
+            //            f[2].MakeConnection(t[3]),
+            //        },
+            //    }
+            //};
+
+
         }
     }
 }
